@@ -51,16 +51,16 @@ if st.session_state.user:
 
     # ── Page routing ──────────────────────────────────────────────────────────
     if page == "Dashboard":
-        from pages.dashboard import show
+        from app_pages.dashboard import show
         show(user)
     elif page == "My Devices":
-        from pages.devices import show
+        from app_pages.devices import show
         show(user)
     elif page == "Calibration History":
-        from pages.calibration import show
+        from app_pages.calibration import show
         show(user)
     elif page == "Admin Panel":
-        from pages.admin import show
+        from app_pages.admin import show
         show(user)
 
 # ── Not logged in → Login / Register ─────────────────────────────────────────
