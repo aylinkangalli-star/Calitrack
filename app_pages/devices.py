@@ -3,7 +3,7 @@ pages/devices.py – User's personal device list (add / remove).
 """
 import streamlit as st
 from database import get_user_devices, get_catalog, add_user_device, remove_user_device
-from theme import page_header
+from theme import status_badge
 
 
 def show(user: dict):
