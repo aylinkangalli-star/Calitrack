@@ -4,7 +4,7 @@ pages/dashboard.py – Summary view for logged-in users.
 import streamlit as st
 from datetime import date
 from database import get_user_devices, get_overdue_devices
-from theme import page_header, status_badge, metric_card
+from theme import status_badge
 
 
 def _status(next_cal: str | None) -> tuple[str, str]:
