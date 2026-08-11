@@ -7,7 +7,7 @@ from database import (
     get_catalog, add_catalog_device, update_catalog_device, delete_catalog_device,
     add_calibration_record, get_overdue_devices,
 )
-from theme import page_header, status_badge
+from theme import status_badge
 
 
 def show(user: dict):
