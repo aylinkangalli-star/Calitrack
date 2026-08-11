@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # ── Apply theme (colors, fonts, etc.) ──────────────────────────────────────────
-inject_theme()
+#inject_theme()
 
 # ── Init DB on first run ──────────────────────────────────────────────────────
 init_db()
