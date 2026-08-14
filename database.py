@@ -8,7 +8,7 @@ from pathlib import Path
 
 DB_PATH = Path(__file__).parent / "calitrack.db"
 
-## Veritabanına bağlanarak dosya oluştur
+## Veritabanına bağlanarak dosya oluştur.
 ## Sorgu sonuçlarını sözlük gibi kullan
 ## Tablolar arası ilişkileri aktif et
 def get_conn():
@@ -23,10 +23,15 @@ def get_conn():
 ## Veritabanı tablolarını oluştur.
 # Her satıra benzersiz numara var. Tablo yoksa oluştur.
 # Her açılışta init_db fonsksiyonunu çağır, böylece mevcut verileri silme.
-#  USERNAME benzersizliği için unique ifadesi kullanılmıştır
+# init_db = veritabanını oluşyur.
+# USERNAME benzersizliği için unique ifadesi kullanılmıştır.
 # password hash ile şifrenin kendisi değil bcryp i saklanıyor.
-# not null = boş bırakılamaz
+# not null = boş bırakılamaz.
 # on delete cascade ile user silinirse cihaz listesini de otomatik siler.
+# INTEGER → id bir tam sayıdır.
+# PRIMARY KEY → Her kaydı benzersiz şekilde tanımlar. Aynı id iki kayıtta olamaz.
+# AUTOINCREMENT → Yeni kayıt eklenirken id otomatik olarak artırılır.
+# ON DELETE CASCADE = user ile silinirse cihaz listesini de otomatik siler.
 def init_db():
     with get_conn() as conn:
         conn.executescript("""
@@ -47,8 +52,6 @@ def init_db():
             created_at               TEXT NOT NULL DEFAULT (date('now'))
         );
         
-
-
         CREATE TABLE IF NOT EXISTS user_devices (
             id               INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id          INTEGER NOT NULL REFERENCES users(id)          ON DELETE CASCADE,
@@ -70,6 +73,7 @@ def init_db():
         """)
         _seed_admin(conn)
 
+# admin hesabı oluştur, şifresini admin123 yap.
 
 def _seed_admin(conn):
     """Create a default admin account if none exists."""
@@ -81,8 +85,9 @@ def _seed_admin(conn):
             ("admin", hashed)
         )
 
-
 # ── Auth ──────────────────────────────────────────────────────────────────────
+# User ismi 3 karakterden büyük olmalıdır.
+# Password 6 karakterden büyük olmalıdır.
 
 def register_user(username: str, password: str) -> tuple[bool, str]:
     """Returns (success, message)."""
@@ -101,6 +106,7 @@ def register_user(username: str, password: str) -> tuple[bool, str]:
     except sqlite3.IntegrityError:
         return False, "Username already taken."
 
+# fetchone veritabanından bir sayır alır. dict(row) o satırı bir Python sözlüğüne dönüştürür.
 
 def login_user(username: str, password: str):
     """Returns user dict or None."""
@@ -112,24 +118,23 @@ def login_user(username: str, password: str):
         return dict(row)
     return None
 
-
 # ── Device catalog ────────────────────────────────────────────────────────────
+
+# Cihaz katalogunu isim sırasına göre getirir. fetchall tüm satırları alır.
 
 def get_catalog():
     with get_conn() as conn:
         return [dict(r) for r in conn.execute(
             "SELECT * FROM device_catalog ORDER BY name"
         ).fetchall()]
-
-
+        
 def add_catalog_device(name, brand, model, interval_days):
     with get_conn() as conn:
         conn.execute(
             "INSERT INTO device_catalog (name, brand, model, calibration_interval_days) VALUES (?,?,?,?)",
             (name, brand, model, interval_days)
         )
-
-
+        
 def update_catalog_device(device_id, name, brand, model, interval_days):
     with get_conn() as conn:
         conn.execute(
@@ -137,11 +142,9 @@ def update_catalog_device(device_id, name, brand, model, interval_days):
             (name, brand, model, interval_days, device_id)
         )
 
-
 def delete_catalog_device(device_id):
     with get_conn() as conn:
         conn.execute("DELETE FROM device_catalog WHERE id=?", (device_id,))
-
 
 # ── User devices ──────────────────────────────────────────────────────────────
 
