@@ -15,11 +15,15 @@ st.set_page_config(
 # ── Init DB on first run ──────────────────────────────────────────────────────
 init_db()
 
+# Streamlit her etkileşimde sayfayı baştan çalıştırdığı için, 
+# bu bilgiler session_state'te tutulmazsa her tıklamada kullanıcı 
+# "çıkış yapmış" gibi görünür. Bu yüzden bu kısım kritik.
+
 # ── Session state helpers ─────────────────────────────────────────────────────
 if "user" not in st.session_state:
     st.session_state.user = None
 
-
+# Session state'i sıfırlayıp kullanıcıyı tekrar giriş ekranına döndürüyor.
 def do_logout():
     st.session_state.user = None
     st.rerun()
